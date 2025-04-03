@@ -1,13 +1,24 @@
-# GitHub Codespaces ♥️ Flask
+# Phishing Email Detector
 
-Welcome to your shiny new Codespace running Flask! We've got everything fired up and running for you to explore Flask.
+## Description
 
-You've got a blank canvas to work on from a git perspective as well. There's a single initial commit with the what you're seeing right now - where you go from here is up to you!
+This project is a web application built with Flask that analyzes email text content to detect potential phishing attempts. It utilizes a pre-trained machine learning model from the Hugging Face Transformers library to classify emails. [cite: 1]
 
-Everything you do here is contained within this one codespace. There is no repository on GitHub yet. If and when you’re ready you can click "Publish Branch" and we’ll create your repository and push up your project. If you were just exploring then and have no further need for this code then you can simply delete your codespace and it's gone forever.
+## Features
 
-To run this application:
+* Provides a simple web interface to paste and analyze email text.
+* Uses the `cybersectony/phishing-email-detection-distilbert_v2.4.1` model for classification. [cite: 1]
+* Displays the most likely classification (e.g., "Likely Legitimate", "Suspicious / Phishing Link Likely"). [cite: 1]
+* Shows the confidence score for the top prediction. [cite: 1]
+* Provides detailed probabilities for all classification categories considered by the model. [cite: 1]
 
-```
-flask --debug run
-```
+## Dependencies
+
+* Python 3.x
+* Flask [cite: 1]
+* Hugging Face Transformers (`transformers`) [cite: 1]
+* PyTorch (`torch`) [cite: 1]
+
+You can install the Python dependencies using pip:
+```bash
+pip install Flask transformers torch
