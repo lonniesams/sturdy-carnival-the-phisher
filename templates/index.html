@@ -1,19 +1,65 @@
-<head>
-    <title>{{ title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phishing Email Detector</title>
+    <style>
+      body { font-family: sans-serif; max-width: 700px; margin: 50px auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; }
+      textarea { width: 100%; min-height: 150px; margin-bottom: 10px; }
+      button { padding: 10px 15px; cursor: pointer; }
+      .result-summary { margin-top: 20px; padding: 15px; border-radius: 5px; border: 1px solid; }
+      .result-details { margin-top: 10px; padding: 10px; background-color: #f8f9fa; border: 1px dashed #ccc; border-radius: 4px; font-size: 0.9em; }
+      .result-details ul { padding-left: 20px; margin: 5px 0;}
+      /* Update CSS classes based on simplified label */
+      .suspicious { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+      .legitimate { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+      .unknown { background-color: #e2e3e5; border-color: #d6d8db; color: #383d41; }
+      .error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; margin-top: 15px; padding: 10px;}
+      .disclaimer { font-size: 0.8em; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px;}
+    </style>
+  </head>
+  <body>
+    <h1>Phishing Email Detector</h1>
+    <p>Enter the full text content of an email below to analyze it.</p>
+    <p><strong>Disclaimer:</strong> This tool (using model <code>{{ model_name }}</code>) is for educational purposes and may not be accurate. Do not rely solely on this for security decisions.</p>
 
-<body>
-    <div class="App">
-        <header class="App-header">
-            <img src="{{ url_for('static', filename='Octocat.png') }}" class="App-logo" alt="logo" />
-            <p>
-                GitHub Codespaces <span class="heart">♥️</span> Flask
-            </p>
-            <p class="small">
-                Edit <code>templates/index.html</code> and refresh to see your changes!
-            </p>
-        </header>
+    {% if error and not result %}
+        <div class="error">
+            <strong>Error:</strong> {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="post">
+      <textarea name="text" placeholder="Paste email body here...">{{ text }}</textarea><br>
+      <button type="submit">Analyze Email</button>
+    </form>
+
+    {% if result and friendly_label %}
+      <div class="result-summary {% if 'Suspicious' in friendly_label %}suspicious{% elif 'Legitimate' in friendly_label %}legitimate{% else %}unknown{% endif %}">
+        <h2>Analysis Result Summary</h2>
+        <p><strong>Overall Assessment:</strong> {{ friendly_label }}</p>
+        <p><strong>Top Prediction:</strong> {{ result.prediction }}</p> <p><strong>Confidence Score:</strong> {{ "%.4f"|format(result.confidence) }}</p>
+      </div>
+
+      <div class="result-details">
+          <strong>Detailed Probabilities:</strong>
+          <ul>
+              {% for label, probability in result.all_probabilities.items() %}
+                  <li>{{ label }}: {{ "%.4f"|format(probability) }}</li>
+              {% endfor %}
+          </ul>
+      </div>
+
+    {% elif error %}
+         <div class="error">
+            <strong>Error during analysis:</strong> {{ error }}
+        </div>
+    {% endif %}
+
+     <div class="disclaimer">
+        <strong>Reminder:</strong> Phishing detection is complex. This model provides probabilities for specific categories based on the text. Always look for other signs like sender addresses, urgent requests, unexpected attachments, and suspicious links.
     </div>
-</body>
 
+  </body>
 </html>
